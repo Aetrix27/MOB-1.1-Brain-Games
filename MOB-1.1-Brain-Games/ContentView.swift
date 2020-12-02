@@ -14,19 +14,36 @@ struct colorOptions{
 
 var colorsArr : [String] = ["Red", "Orange", "Blue", "Purple", "Pink", "Yellow", "Green"]
 
-var selectedColor : String = "Red"
+func randomColor() -> String{
+    let randomIndex = Int.random(in: 0..<colorsArr.count)
+
+    return colorsArr[randomIndex]
+}
+
+var selectedColor : String = randomColor()
 
 let bottomColor = colorOptions(text: "Red", color: .red)
-var message : String = ""
+var message : Bool = true
 var userBool : Bool = true
 
+var randomChoice = ""
 
 func returnColor() -> String{
     switch bottomColor.color {
         case .red:
             return "Red"
-
-        default:
+        case .blue:
+                return "Blue"
+        case .orange:
+                return "Orange"
+        case .yellow:
+                return "Yellow"
+        case .purple:
+                return "Purple"
+        case .green:
+                return "Green"
+                
+            default:
                 return "Error"
     }
 
@@ -34,9 +51,27 @@ func returnColor() -> String{
 
 func checkEquality(){
     if returnColor() == bottomColor.text{
-        message = "Correct"
+        message = true
     }
+    randomChoice = selectedColor
 
+}
+
+func onClick(userChoice : String) -> String{
+    
+    if(userChoice == "Yes"){
+        userBool = true
+    }else if (userChoice == "No"){
+        userBool = false
+    }
+    
+    if (userBool == message){
+        return "Correct!"
+    }else if(userBool != message){
+        return "Incorrect!"
+    }else{
+        return "Error"
+    }
 }
 
 struct ContentView : View {
@@ -47,7 +82,7 @@ struct ContentView : View {
             Text("Does the meaning match the color?")
                 .font(.largeTitle)
                 .padding()
-            Text(message)
+            Text(randomChoice)
           
             Text(bottomColor.text)
                 .font(.headline)
