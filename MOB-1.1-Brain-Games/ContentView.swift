@@ -17,10 +17,9 @@ var colorsArr : [String] = ["Red", "Orange", "Blue", "Purple", "Pink", "Yellow",
 var selectedColor : String = "Red"
 
 let bottomColor = colorOptions(text: "Red", color: .red)
-var message : Bool = true
+var message : String = ""
 var userBool : Bool = true
 
-var randomChoice = ""
 
 func returnColor() -> String{
     switch bottomColor.color {
@@ -33,15 +32,22 @@ func returnColor() -> String{
 
 }
 
+func checkEquality(){
+    if returnColor() == bottomColor.text{
+        message = "Correct"
+    }
+
+}
 
 struct ContentView : View {
+    @State var state = checkEquality()
     
     var body: some View {
         VStack{
             Text("Does the meaning match the color?")
                 .font(.largeTitle)
                 .padding()
-            Text(randomChoice)
+            Text(message)
           
             Text(bottomColor.text)
                 .font(.headline)
