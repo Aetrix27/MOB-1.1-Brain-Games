@@ -26,8 +26,6 @@ let bottomColor = colorOptions(text: "Red", color: .red)
 var message : Bool = true
 var userBool : Bool = true
 
-var randomChoice = ""
-
 func returnColor() -> String{
     switch bottomColor.color {
         case .red:
@@ -53,7 +51,6 @@ func checkEquality(){
     if returnColor() == bottomColor.text{
         message = true
     }
-    randomChoice = selectedColor
 
 }
 
@@ -76,7 +73,9 @@ func onClick(userChoice : String) -> String{
 
 struct ContentView : View {
     @State var state = checkEquality()
-    
+    @State var randomChoice = selectedColor
+    //@State var bottomColor
+      
     var body: some View {
         VStack{
             Text("Does the meaning match the color?")
@@ -88,18 +87,28 @@ struct ContentView : View {
                 .font(.headline)
                 .padding()
                 .foregroundColor(bottomColor.color)
-
+            if userBool == true{
+                Text("Correct!")
+            }else if userBool == false{
+                Text("Incorrect!")
+            }
         }
         
         HStack{
-            Button(action: {}, label: {
+            Button(action: {
+                Text(onClick(userChoice: "Yes"))
+                //randomChoice=bottomColor.text
+                //bottomColor.color=randomColor()
+            }, label: {
                 Text("No")
             }).padding()
             Button(action: {
+               Text(onClick(userChoice: "No"))
+                //randomChoice=randomColor()
+                //bottomColor.color=randomColor()
             }, label: {
                 Text("Yes")
             })
-            
         }
         
     }
