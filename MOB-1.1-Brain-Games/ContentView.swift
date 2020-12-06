@@ -12,7 +12,8 @@ struct colorOptions{
     var color: Color
 }
 
-var colorsArr : [String] = ["Red", "Orange", "Blue", "Purple", "Pink", "Yellow", "Green"]
+var colorsArr : [String] = ["Red", "Orange", "Blue", "Purple", "Yellow", "Green"]
+var colorsTypeArr : [Color] = [.red, .orange, .blue, .purple, .pink, .yellow, .green]
 
 func randomColor() -> String{
     let randomIndex = Int.random(in: 0..<colorsArr.count)
@@ -20,60 +21,72 @@ func randomColor() -> String{
     return colorsArr[randomIndex]
 }
 
-var selectedColor : String = randomColor()
+func randomColorType() -> Color{
+    let randomIndex = Int.random(in: 0..<colorsTypeArr.count)
 
-let bottomColor = colorOptions(text: "Red", color: .red)
-var message : Bool = true
-var userBool : Bool = true
+    return colorsTypeArr[randomIndex]
+}
 
-func returnColor() -> String{
-    switch bottomColor.color {
+//var correctAnswer : Bool = true
+
+func returnColor(bottomColorIn : Color) -> String{
+    switch bottomColorIn{
         case .red:
             return "Red"
         case .blue:
-                return "Blue"
+            return "Blue"
         case .orange:
-                return "Orange"
+            return "Orange"
         case .yellow:
-                return "Yellow"
+            return "Yellow"
         case .purple:
-                return "Purple"
+            return "Purple"
         case .green:
-                return "Green"
-                
-            default:
-                return "Error"
+            return "Green"
+        default:
+            return "Error"
     }
 
 }
 
-func checkEquality(){
-    if returnColor() == bottomColor.text{
-        message = true
+func checkEquality(chosenColor : Color, topColor : String) -> Bool{
+    var correctAnswer : Bool = false
+
+    if returnColor(bottomColorIn: chosenColor) == topColor{
+        correctAnswer = true
+    }else if returnColor(bottomColorIn : chosenColor) != topColor{
+        correctAnswer = false
     }
-
-}
-
-func onClick(userChoice : String) -> String{
     
-    if(userChoice == "Yes"){
+    return correctAnswer
+
+}
+
+func onClick(userChoice : String, colorSelected : Color, topColorIn : String, userBool : inout Bool) -> Bool{
+    
+    if(userChoice == "Yes" && checkEquality(chosenColor: colorSelected, topColor: topColorIn) == true){
         userBool = true
-    }else if (userChoice == "No"){
+    }else if (userChoice == "No" && checkEquality(chosenColor: colorSelected, topColor: topColorIn) == false){
+        userBool = true
+    }else if (userChoice == "No" && checkEquality(chosenColor: colorSelected, topColor: topColorIn) == true){
+        userBool = false
+    }else if (userChoice == "Yes" && checkEquality(chosenColor: colorSelected, topColor: topColorIn) == false){
         userBool = false
     }
+    return userBool
     
-    if (userBool == message){
-        return "Correct!"
-    }else if(userBool != message){
-        return "Incorrect!"
-    }else{
-        return "Error"
-    }
 }
 
 struct ContentView : View {
-    @State var state = checkEquality()
-    @State var randomChoice = selectedColor
+    //@State var state: () = checkEquality()
+    @State var randomTopColor = randomColor()
+    @State var updatedBottomText = randomColor()
+    @State var updatedBottomColor = randomColorType()
+    @State var updatedUserBool = false
+    @State var buttonPressed = false
+    
+    
+
     //@State var bottomColor
       
     var body: some View {
@@ -81,34 +94,49 @@ struct ContentView : View {
             Text("Does the meaning match the color?")
                 .font(.largeTitle)
                 .padding()
-            Text(randomChoice)
-          
-            Text(bottomColor.text)
+            Text("Meaning")
+            Text(randomTopColor)
+            Text("Text Color")
+            Text(updatedBottomText)
                 .font(.headline)
                 .padding()
-                .foregroundColor(bottomColor.color)
-            if userBool == true{
+                .foregroundColor(updatedBottomColor)
+            
+            if updatedUserBool == true && buttonPressed == true{
                 Text("Correct!")
-            }else if userBool == false{
+            }else if updatedUserBool == false && buttonPressed == true{
                 Text("Incorrect!")
             }
+            
         }
         
         HStack{
             Button(action: {
-                Text(onClick(userChoice: "Yes"))
-                //randomChoice=bottomColor.text
-                //bottomColor.color=randomColor()
+                updatedUserBool = onClick(userChoice : "No", colorSelected : updatedBottomColor, topColorIn : randomTopColor, userBool : &updatedUserBool)
+                
+                randomTopColor = randomColor()
+                updatedBottomColor = randomColorType()
+                updatedBottomText = randomColor()
+                buttonPressed = true
+              
+                
             }, label: {
                 Text("No")
             }).padding()
             Button(action: {
-               Text(onClick(userChoice: "No"))
-                //randomChoice=randomColor()
-                //bottomColor.color=randomColor()
+                
+                updatedUserBool = onClick(userChoice : "Yes", colorSelected : updatedBottomColor, topColorIn : randomTopColor, userBool : &updatedUserBool)
+                
+                randomTopColor = randomColor()
+                updatedBottomColor = randomColorType()
+                updatedBottomText = randomColor()
+                
+                buttonPressed = true
+              
             }, label: {
                 Text("Yes")
             })
+            
         }
         
     }
